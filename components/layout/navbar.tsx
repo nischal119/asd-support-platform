@@ -1,53 +1,63 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Heart, Menu } from "lucide-react"
-import { getStoredUser, clearStoredUser } from "@/lib/auth"
-import { useRouter } from "next/navigation"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Heart, Menu } from "lucide-react";
+import { getStoredUser, clearStoredUser, User } from "@/lib/auth";
+import { useRouter } from "next/navigation";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export function Navbar() {
-  const [user, setUser] = useState(null)
-  const router = useRouter()
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    setUser(getStoredUser())
-  }, [])
+    const storedUser = getStoredUser();
+    setUser(storedUser);
+  }, []);
 
   const handleLogout = () => {
-    clearStoredUser()
-    setUser(null)
-    router.push("/")
-  }
+    clearStoredUser();
+    setUser(null);
+    router.push("/");
+  };
 
   const getDashboardLink = () => {
-    if (!user) return "/"
-    return `/dashboard/${user.role}`
-  }
+    if (!user) return "/";
+    return `/dashboard/${user.role}`;
+  };
 
   const NavLinks = () => (
     <>
-      <Link href="/about" className="text-muted-foreground hover:text-foreground transition-colors">
+      <Link
+        href="/about"
+        className="text-muted-foreground hover:text-foreground transition-colors"
+      >
         About
       </Link>
-      <Link href="/support" className="text-muted-foreground hover:text-foreground transition-colors">
+      <Link
+        href="/support"
+        className="text-muted-foreground hover:text-foreground transition-colors"
+      >
         Support
       </Link>
-      <Link href="/contact" className="text-muted-foreground hover:text-foreground transition-colors">
+      <Link
+        href="/contact"
+        className="text-muted-foreground hover:text-foreground transition-colors"
+      >
         Contact
       </Link>
     </>
-  )
+  );
 
   return (
     <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
@@ -66,14 +76,23 @@ export function Navbar() {
           <div className="flex items-center space-x-4">
             {user ? (
               <>
-                <Button asChild variant="ghost" className="hidden md:inline-flex">
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="hidden md:inline-flex"
+                >
                   <Link href={getDashboardLink()}>Dashboard</Link>
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Button
+                      variant="ghost"
+                      className="relative h-8 w-8 rounded-full"
+                    >
                       <Avatar className="h-8 w-8">
-                        <AvatarFallback className="bg-primary/10">{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                        <AvatarFallback className="bg-primary/10">
+                          {user.name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
@@ -81,7 +100,9 @@ export function Navbar() {
                     <div className="flex items-center justify-start gap-2 p-2">
                       <div className="flex flex-col space-y-1 leading-none">
                         <p className="font-medium">{user.name}</p>
-                        <p className="w-[200px] truncate text-sm text-muted-foreground">{user.email}</p>
+                        <p className="w-[200px] truncate text-sm text-muted-foreground">
+                          {user.email}
+                        </p>
                       </div>
                     </div>
                     <DropdownMenuSeparator />
@@ -132,7 +153,11 @@ export function Navbar() {
                       <Button asChild variant="ghost" className="justify-start">
                         <Link href="/settings">Settings</Link>
                       </Button>
-                      <Button onClick={handleLogout} variant="ghost" className="justify-start">
+                      <Button
+                        onClick={handleLogout}
+                        variant="ghost"
+                        className="justify-start"
+                      >
                         Log out
                       </Button>
                     </>
@@ -153,5 +178,5 @@ export function Navbar() {
         </div>
       </div>
     </nav>
-  )
+  );
 }
